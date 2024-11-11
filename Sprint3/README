@@ -1,2 +1,2 @@
-#Sprint 3
+Sprint 3
 For Sprint 3, I made a single-cycle RISC-V datapath that supports the standard RISC-V ISA. To test the datapath, I ran a program that encrypts the Fibonnaci Sequence and stores it in memory. To load programs to the datapath edit the memory path in Instruction Memory.v with a hex file containing RISC-V instructions. Next steps in my expansion of this RISC-V processor are to debug all instructions, convert to a pipelined design (and potentially multicycle), add cacheing/virtual memory, add peripherals, and testing on FPGA.
