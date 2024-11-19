@@ -65,7 +65,7 @@ module ImmediateGen(Ins, Immediate);
 		endcase
 		if (Fmt & 5'h10) Immediate = {{20{Ins[31]}}, Ins[31:20]};
 		else if (Fmt & 5'h08) Immediate = {{20{Ins[31]}}, Ins[31:25], Ins[11:7]};
-		else if (Fmt & 5'h04) Immediate = {{20{Ins[31]}}, Ins[31], Ins[7], Ins[30:25], Ins[11:8], 1'b0};
+		else if (Fmt & 5'h04) Immediate = {{19{Ins[31]}}, Ins[31], Ins[7], Ins[30:25], Ins[11:8], 1'b0};//19Ins31 ?
 		else if (Fmt & 5'h02) Immediate = {Ins[31:12], {12{1'b0}}};
 		else if (Fmt & 5'h01) Immediate = {{11{Ins[31]}}, Ins[31], Ins[19:12], Ins[20], Ins[30:21], 1'b0};
 	end

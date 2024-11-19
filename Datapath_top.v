@@ -5,7 +5,7 @@
 // 
 // Create Date: 10/30/2024 04:31:44 PM
 // Design Name: 
-// Module Name: Datapath_top
+// Module Name: Datapath
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -105,3 +105,4 @@ module Datapath_top();
     end
     
 endmodule
+

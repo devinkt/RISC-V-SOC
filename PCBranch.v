@@ -28,6 +28,6 @@ module PCBranch(PCAddr, Immediate, PCBranch);
     input [BITSIZE-1:0] Immediate;
     output [BITSIZE-1:0] PCBranch;
     
-    assign PCBranch = PCAddr + (Immediate<<2);
+    assign PCBranch = PCAddr + (Immediate);//try removing this <<2
     
 endmodule
