@@ -28,7 +28,7 @@ module InstructionMemory(PCAddr, Ins);
     reg [31:0]RAM[1023:0];
     
     initial begin
-        $readmemh("C:/Users/devin/instructions2.hex", RAM);
+        $readmemh("C:/Users/devin/instructions.hex", RAM);
         
         $display("Loaded instructions:");
         for (integer i = 0; i < 10; i = i + 1) begin

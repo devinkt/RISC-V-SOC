@@ -22,8 +22,8 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 
 	input [6:0] Opcode;
 	output reg Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-	output reg [2:0] ALUOp; 
-     
+	output reg [2:0] ALUOp;
+
     wire [6:0] BranchMask;
 	assign BranchMask = 7'b1100011;
 	wire [6:0] SMask;
@@ -88,7 +88,7 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 	ALUOp = 3'b000;
 	MemRead = 1'b1;
 	MemtoReg = 1'b1;
-	MemWrite = 1'b0;
+	MemWrite = 1'b0; 
 	end
 	
 	//I Fmt immediate instructions

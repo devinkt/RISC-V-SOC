@@ -54,7 +54,7 @@ module ImmediateGen(Ins, Immediate);
 		case(Mask)
 		7'b00000: Fmt = 5'b10000;
 		7'b00011: Fmt = 5'b10000;
-		7'b00100: Fmt = 5'b10000;
+		7'b00100: Fmt = (Ins[14:12] != 3'b101) ? 5'b10000: 5'b10001;
 		7'b11001: Fmt = 5'b10000;
 		7'b11100: Fmt = 5'b10000;
 		7'b01000: Fmt = 5'b01000;
@@ -63,7 +63,8 @@ module ImmediateGen(Ins, Immediate);
 		7'b01101: Fmt = 5'b00010;
 		7'b11011: Fmt = 5'b00001;
 		endcase
-		if (Fmt & 5'h10) Immediate = {{20{Ins[31]}}, Ins[31:20]};
+		if (Fmt == 5'h10) Immediate = {{20{Ins[31]}}, Ins[31:20]};
+		else if (Fmt == 5'h11) Immediate = {{27'b0}, Ins[24:20]};
 		else if (Fmt & 5'h08) Immediate = {{20{Ins[31]}}, Ins[31:25], Ins[11:7]};
 		else if (Fmt & 5'h04) Immediate = {{19{Ins[31]}}, Ins[31], Ins[7], Ins[30:25], Ins[11:8], 1'b0};//19Ins31 ?
 		else if (Fmt & 5'h02) Immediate = {Ins[31:12], {12{1'b0}}};

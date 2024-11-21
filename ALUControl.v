@@ -38,7 +38,7 @@ always @(*) begin
        else if((Funct3 == 3'b010) && (Funct7 == 1'b0)) ALUCtrl = 5'b01011; //slt
        else if((Funct3 == 3'b011) && (Funct7 == 1'b0)) ALUCtrl = 5'b01011; //sltu might not be currently supported
        else if((Funct3 == 3'b100) && (Funct7 == 1'b0)) ALUCtrl = 5'b00100; //xor
-       else if((Funct3 == 3'b101) && (Funct7 == 1'b1)) ALUCtrl = 5'b00111; //srl
+       else if((Funct3 == 3'b101) && (Funct7 == 1'b0)) ALUCtrl = 5'b00111; //srl
        else if((Funct3 == 3'b101) && (Funct7 == 1'b1)) ALUCtrl = 5'b00101; //sra
        else if((Funct3 == 3'b110) && (Funct7 == 1'b0)) ALUCtrl = 5'b00001; //or
        else if((Funct3 == 3'b111) && (Funct7 == 1'b0)) ALUCtrl = 5'b00000; //and

@@ -96,7 +96,7 @@ module Datapath_top();
     ControlUnit CU(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
     ALUControl AC (ALUOp, Funct7, Funct3, ALUCtrl);
     RISCV_ALU ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout);
-    DataMemory DM(clock, Addr, WriteData, MemWrite, MemRead, ReadData);
+    DataMemory DM(clock, Funct3, Immediate, Addr, WriteData, MemWrite, MemRead, ReadData);
         
 
     initial begin
