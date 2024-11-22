@@ -85,13 +85,15 @@ module Datapath_top();
     wire [BITSIZE-1:0] PCnext;
     wire [BITSIZE-1:0] PCp4;
     wire [BITSIZE-1:0] PCBranch;
-    assign PCnext = (Branch & Zero) ? PCBranch : PCp4;
+    wire BranchTaken;
+    assign PCnext = (BranchTaken) ? PCBranch : PCp4;
    
     PCAdder PA (PCAddr, Increment, PCp4);
     PCBranch PB (PCAddr, Immediate, PCBranch);
     PC PC1 (clock, PCnext, PCAddr);
     InstructionMemory IM(PCAddr, Ins);
     RegisterFile RF(RR1, RR2, WR, WD, WEn, clock, reset, RD1, RD2);
+    BranchUnit BU(RD1, RD2, Opcode, Funct3, BranchTaken);
     ImmediateGen IG (Ins, Immediate);
     ControlUnit CU(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
     ALUControl AC (ALUOp, Funct7, Funct3, ALUCtrl);

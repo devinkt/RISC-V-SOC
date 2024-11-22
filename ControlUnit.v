@@ -49,6 +49,7 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 	
 	always @* begin
 	//handle branch instruction control lines
+	//branch no longer used with branch unit, Execute unit unecessary for branch instructions
     if(BranchMask == Opcode) begin
     Branch = 1'b1;
 	ALUSrc = 1'b0;
