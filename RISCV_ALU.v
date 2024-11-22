@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module RISCV_ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout);  
+module RISCV_ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout, Negative);  
 
     input [31:0] SrcA;
     input [31:0] SrcB;
@@ -31,6 +31,7 @@ module RISCV_ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryou
     output reg [31:0] Result;
     output reg Overflow;
     output reg Carryout;
+    output reg Negative;
     
     assign Zero = (Result==0)?1:0;
     always begin
@@ -48,11 +49,10 @@ module RISCV_ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryou
             11:Result = (SrcA<SrcB)?1:0; //01011
             24:Result = (~(SrcA | SrcB)); //11000
         endcase
-		if (SrcA[31] & SrcB[31]) Carryout = 1'b1;
-		else Carryout = 1'b0;
-		if (((Carryout == 1) && ((Result[31] == 0) && ~(SrcA[31]^SrcB[31])))|((Carryout == 0) && ((Result[31] == 1)&&(SrcA&SrcB))))
-		Overflow = 1'b1;
-		else Overflow = 1'b0;
+	    if(Result[31] == 1) Negative = 1; else Negative = 0; //neg flag
+	    if((Result < SrcA)|(Result < SrcB)) Carryout = 1; else Carryout = 0; //carry-out
+        if(((SrcA[30] & SrcB[30]) | ((SrcA[30] | SrcB[30]) & ~(Result[30]))) ^ 
+        ((SrcA[31] & SrcB[31]) | ((SrcA[31] | SrcB[31]) & ~Result[31]))) Overflow = 1; else Overflow = 0; //overflow
     end
     
 	

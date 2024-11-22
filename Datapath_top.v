@@ -69,7 +69,7 @@ module Datapath_top();
     assign Binv = ALUCtrl[3];
     wire [2:0] ALUsel;
     assign ALUsel[2:0] = ALUCtrl [2:0];
-    wire Zero, Overflow, Carryout;
+    wire Zero, Overflow, Carryout, Negative;
     wire [BITSIZE-1:0] Result;
     
     //DataMemory
@@ -95,7 +95,7 @@ module Datapath_top();
     ImmediateGen IG (Ins, Immediate);
     ControlUnit CU(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
     ALUControl AC (ALUOp, Funct7, Funct3, ALUCtrl);
-    RISCV_ALU ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout);
+    RISCV_ALU ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout, Negative);
     DataMemory DM(clock, Funct3, Immediate, Addr, WriteData, MemWrite, MemRead, ReadData);
         
 
@@ -105,4 +105,3 @@ module Datapath_top();
     end
     
 endmodule
-
