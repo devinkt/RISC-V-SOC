@@ -35,7 +35,7 @@ always @(*) begin
     2: if((Funct3 == 3'b000) && (Funct7 == 1'b0)) ALUCtrl = 5'b00010; //add
        else if((Funct3 == 3'b000) && (Funct7 == 1'b1)) ALUCtrl = 5'b01010; //sub
        else if((Funct3 == 3'b001) && (Funct7 == 1'b0)) ALUCtrl = 5'b00110; //sll
-       else if((Funct3 == 3'b010) && (Funct7 == 1'b0)) ALUCtrl = 5'b01011; //slt
+       else if((Funct3 == 3'b010) && (Funct7 == 1'b0)) ALUCtrl = 5'b01100; //slt
        else if((Funct3 == 3'b011) && (Funct7 == 1'b0)) ALUCtrl = 5'b01011; //sltu might not be currently supported
        else if((Funct3 == 3'b100) && (Funct7 == 1'b0)) ALUCtrl = 5'b00100; //xor
        else if((Funct3 == 3'b101) && (Funct7 == 1'b0)) ALUCtrl = 5'b00111; //srl
@@ -44,7 +44,7 @@ always @(*) begin
        else if((Funct3 == 3'b111) && (Funct7 == 1'b0)) ALUCtrl = 5'b00000; //and
     3: if(Funct3 == 3'b000) ALUCtrl = 5'b00010; //addi
        else if(Funct3 == 3'b001) ALUCtrl = 5'b00110; //slli
-       else if(Funct3 == 3'b010) ALUCtrl = 5'b01011; //slti
+       else if(Funct3 == 3'b010) ALUCtrl = 5'b01100; //slti
        else if(Funct3 == 3'b011) ALUCtrl = 5'b01011; //sltiu not sure how to handle this leave same for now
        else if(Funct3 == 3'b100) ALUCtrl = 5'b00100; //xori 
        else if((Funct3 == 3'b101) && (Funct7 == 1'b0)) ALUCtrl = 5'b00111; //srli

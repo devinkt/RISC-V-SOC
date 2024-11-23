@@ -20,13 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module BranchUnit(SrcA, SrcB, Opcode, Funct3, BranchTaken);
+module BranchUnit(SrcA, SrcB, Opcode, Funct3, PC, Result, BranchTaken, JumpTaken, PC_Latched, JumpReturn);
 
     input [31:0] SrcA;
     input [31:0] SrcB;
     input [6:0] Opcode;
     input [2:0] Funct3;
+    input [31:0] PC;
+    input [31:0] Result;
     output reg BranchTaken;
+    output reg JumpTaken;
+    output reg [31:0] PC_Latched;
+    output reg [31:0] JumpReturn;
     
     wire signed [31:0] SignedSrcA;
     wire signed [31:0] SignedSrcB;
@@ -44,6 +49,8 @@ module BranchUnit(SrcA, SrcB, Opcode, Funct3, BranchTaken);
     
     always @(*) begin
     BranchTaken = 1'b0;
+    JumpTaken = 1'b0;
+//    PC_Latched = 32'b0;
     if(Opcode == 7'b1100011) begin
     case(Funct3)
     3'b000: BranchTaken = beq;
@@ -53,6 +60,15 @@ module BranchUnit(SrcA, SrcB, Opcode, Funct3, BranchTaken);
     3'b110: BranchTaken = bltu;
     3'b111: BranchTaken = bgeu;
     endcase
+    end
+    else if(Opcode == 7'b1101111) begin
+    BranchTaken = 1'b1; 
+    PC_Latched = PC + 3'b100;
+    end
+    else if(Opcode == 7'b1100111) begin
+    BranchTaken = 1'b0; 
+    JumpTaken = 1'b1;
+    JumpReturn = Result;
     end
     end
 endmodule

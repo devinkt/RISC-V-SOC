@@ -18,12 +18,14 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
+module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, SrcASel, RegWrite);
 
 	input [6:0] Opcode;
-	output reg Branch, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+	output reg Branch, MemRead, MemWrite, ALUSrc, RegWrite;
 	output reg [2:0] ALUOp;
-
+    output reg [1:0] SrcASel;
+    output reg [1:0] MemtoReg;
+    
     wire [6:0] BranchMask;
 	assign BranchMask = 7'b1100011;
 	wire [6:0] SMask;
@@ -45,7 +47,7 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 	wire [6:0] UMask2;
 	assign UMask2 = 7'b0110111;
 	wire [6:0] UJMask;
-	assign UJMask = 7'b0100011;
+	assign UJMask = 7'b1101111;
 	
 	always @* begin
 	//handle branch instruction control lines
@@ -53,20 +55,22 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
     if(BranchMask == Opcode) begin
     Branch = 1'b1;
 	ALUSrc = 1'b0;
+	SrcASel = 2'b0;
 	RegWrite = 1'b0;
 	ALUOp = 3'b001;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b0;
 	MemWrite = 1'b0;
 	end
 	//S Fmt
 	else if(SMask == Opcode) begin
     Branch = 1'b0;
 	ALUSrc = 1'b1;
+	SrcASel = 2'b0;
 	RegWrite = 1'b0;
 	ALUOp = 3'b000;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b0;
 	MemWrite = 1'b1;
 	end
 	
@@ -74,10 +78,11 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 	else if(RMask == Opcode) begin
     Branch = 1'b0;
 	ALUSrc = 1'b0;
+	SrcASel = 2'b0;
 	RegWrite = 1'b1;
 	ALUOp = 3'b010;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b0;
 	MemWrite = 1'b0;
 	end
 	
@@ -85,44 +90,69 @@ module ControlUnit(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, R
 	else if(IMask1 == Opcode) begin
     Branch = 1'b0;
 	ALUSrc = 1'b1;
+	SrcASel = 2'b0;
 	RegWrite = 1'b1;
 	ALUOp = 3'b000;
 	MemRead = 1'b1;
-	MemtoReg = 1'b1;
+	MemtoReg = 2'b01;
 	MemWrite = 1'b0; 
 	end
 	
 	//I Fmt immediate instructions
-	else if((IMask2 == Opcode)|(IMask3 == Opcode)|(IMask4 == Opcode)|(IMask5 == Opcode)) begin
+	else if((IMask2 == Opcode)|(IMask3 == Opcode)|(IMask5 == Opcode)) begin
     Branch = 1'b0;
 	ALUSrc = 1'b1;
+	SrcASel = 2'b0;
 	RegWrite = 1'b1;
 	ALUOp = 3'b011;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b0;
+	MemWrite = 1'b0;
+	end
+	
+	else if (IMask4 == Opcode) begin
+    Branch = 1'b0;
+	ALUSrc = 1'b1;
+	SrcASel = 2'b0;
+	RegWrite = 1'b1;
+	ALUOp = 3'b011;
+	MemRead = 1'b0;
+	MemtoReg = 2'b0;
 	MemWrite = 1'b0;
 	end
 	
 	//U Fmt immediate instructions might not use ALU directly default to addition op for now in ALUCtrl
-	else if((UMask1 == Opcode)|(UMask2 == Opcode)) begin
+	else if(UMask1 == Opcode) begin
     Branch = 1'b0;
 	ALUSrc = 1'b1;
+	SrcASel = 2'b11;
 	RegWrite = 1'b1;
 	ALUOp = 3'b100;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b0;
 	MemWrite = 1'b0;
 	end
 	
+	else if(UMask2 == Opcode) begin
+    Branch = 1'b0;
+	ALUSrc = 1'b1;
+	SrcASel = 2'b01;
+	RegWrite = 1'b1;
+	ALUOp = 3'b100;
+	MemRead = 1'b0;
+	MemtoReg = 2'b0;
+	MemWrite = 1'b0;
+	end
 	
 	//UJ Fmt immediate instructions defaulting to addition may need to be changed later
 	else if((UJMask == Opcode)) begin
     Branch = 1'b0;
-	ALUSrc = 1'b0;
+	ALUSrc = 1'b1;
+	SrcASel = 2'b01;
 	RegWrite = 1'b1;
 	ALUOp = 2'b000;
 	MemRead = 1'b0;
-	MemtoReg = 1'b0;
+	MemtoReg = 2'b11;
 	MemWrite = 1'b0;
 	end
 	

@@ -48,6 +48,7 @@ module RISCV_ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryou
             7: Result = (SrcA >> SrcB); //00111
             11:Result = (SrcA<SrcB)?1:0; //01011
             24:Result = (~(SrcA | SrcB)); //11000
+            12:Result = ($signed(SrcA) < $signed(SrcB)) ? 1 : 0;
         endcase
 	    if(Result[31] == 1) Negative = 1; else Negative = 0; //neg flag
 	    if((Result < SrcA)|(Result < SrcB)) Carryout = 1; else Carryout = 0; //carry-out

@@ -47,9 +47,11 @@ module Datapath_top();
     //Control Unit
     wire [6:0] Opcode;
     assign Opcode = Ins[6:0];
-    wire Branch, MemRead,  MemtoReg, MemWrite, ALUSrc, RegWrite;
+    wire Branch, MemRead, MemWrite, ALUSrc, RegWrite;
     wire [2:0] ALUOp;
-    
+    wire [1:0] SrcASel;
+    wire [1:0] MemtoReg;
+        
     assign WEn = RegWrite;
     
     //ALUControl
@@ -62,7 +64,9 @@ module Datapath_top();
     //ALU
     wire [BITSIZE-1:0] SrcA;
     wire [BITSIZE-1:0] SrcB;
-    assign SrcA = RD1;
+    assign SrcA = (SrcASel == 2'b01) ? 32'b0:
+                  (SrcASel == 2'b11) ? PCAddr:
+                  RD1;
     assign SrcB = (ALUSrc)? Immediate:RD2;
     wire Ainv, Binv;
     assign Ainv = ALUCtrl[4];
@@ -79,23 +83,31 @@ module Datapath_top();
     assign WriteData = RD2; 
     wire [BITSIZE-1:0] ReadData;     
     
-    assign WD = (MemtoReg)? ReadData:Result;
-    
-    //PC inc
+        //PC inc
     wire [BITSIZE-1:0] PCnext;
     wire [BITSIZE-1:0] PCp4;
     wire [BITSIZE-1:0] PCBranch;
     wire BranchTaken;
-    assign PCnext = (BranchTaken) ? PCBranch : PCp4;
+    wire JumpTaken;
+    wire [BITSIZE-1:0] PC_Latched;
+    wire [BITSIZE-1:0] JumpReturn;
+    
+    assign WD = (MemtoReg == 2'b01)? ReadData:
+                (MemtoReg == 2'b11)? PC_Latched:
+                Result; //need to add ability to write the desitination register from jump instructions 3 way mux //01 read data 00 result 11 rd
+    
+    assign PCnext = (BranchTaken) ? PCBranch :
+                    (JumpTaken)   ? JumpReturn:
+                     PCp4;
    
     PCAdder PA (PCAddr, Increment, PCp4);
     PCBranch PB (PCAddr, Immediate, PCBranch);
     PC PC1 (clock, PCnext, PCAddr);
     InstructionMemory IM(PCAddr, Ins);
     RegisterFile RF(RR1, RR2, WR, WD, WEn, clock, reset, RD1, RD2);
-    BranchUnit BU(RD1, RD2, Opcode, Funct3, BranchTaken);
+    BranchUnit BU(RD1, RD2, Opcode, Funct3, PCAddr, Result, BranchTaken, JumpTaken, PC_Latched, JumpReturn);
     ImmediateGen IG (Ins, Immediate);
-    ControlUnit CU(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, RegWrite);
+    ControlUnit CU(Opcode, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUSrc, SrcASel, RegWrite);
     ALUControl AC (ALUOp, Funct7, Funct3, ALUCtrl);
     RISCV_ALU ALU(SrcA, SrcB, Ainv, Binv, ALUsel, Zero, Result, Overflow, Carryout, Negative);
     DataMemory DM(clock, Funct3, Immediate, Addr, WriteData, MemWrite, MemRead, ReadData);
